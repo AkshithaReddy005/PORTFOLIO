@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akshitha Reddy - Portfolio</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            overflow-x: hidden;
+            color: #d1d5db;
+            background: #0f172a;
+        }
+
+        /* Loading Spinner */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #60a5fa;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Video Background */
+        #video-bg {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -1;
+            filter: brightness(0.5);
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            z-index: -1;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Sidebar for Social Links */
+        .sidebar {
+            position: fixed;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            opacity: 1;
+        }
+
+        .sidebar a:hover {
+            background: #60a5fa;
+            transform: scale(1.1);
+            box-shadow: 0 0 12px rgba(96, 165, 250, 0.6);
+        }
+
+        /* Header/Navigation */
+        header {
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        header.scrolled {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 15px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            color: #d1d5db;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+            background: rgba(96, 165, 250, 0.2);
+        }
+
+        .menu-btn {
+            display: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #d1d5db;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .hero-img {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #60a5fa;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-text {
+            max-width: 600px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            color: #ffffff;
+        }
+
+        .hero h1 span {
+            color: #60a5fa;
+        }
+
+        .hero p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #d1d5db;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #60a5fa;
+            color: #ffffff;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 15px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 100px 0;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.2s;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 50px;
+            color: #ffffff;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 3px;
+            background: #60a5fa;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* About Section */
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-text h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #60a5fa;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .skill-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 16px;
+            color: #d1d5db;
+            transition: all 0.3s ease;
+        }
+
+        .skill-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .achievements-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .achievements-list li {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #d1d5db;
+            margin-bottom: 10px;
+        }
+
+        .achievements-list li::before {
+            content: '🏆';
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        /* Projects Section */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            border-color: #60a5fa;
+        }
+
+        .project-img {
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .project-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .project-card:hover .project-img img {
+            transform: scale(1.05);
+        }
+
+        .project-info {
+            padding: 20px;
+        }
+
+        .project-info h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .project-info p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #d1d5db;
+        }
+
+        .project-info .tech-stack {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 15px;
+        }
+
+        .project-links a {
+            display: inline-block;
+            background: #60a5fa;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .project-links a:hover {
+            background: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        /* Contact Section */
+        .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .contact-content p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #d1d5db;
+        }
+
+        .email-btn {
+            display: inline-block;
+            background: #60a5fa;
+            color: #ffffff;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .email-btn:hover {
+            background: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Scroll-to-Top Button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #60a5fa;
+            color: #ffffff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            background: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            background: rgba(15, 23, 42, 0.9);
+            margin-top: 60px;
+        }
+
+        footer p {
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100vh;
+                background: rgba(15, 23, 42, 0.95);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.5s ease;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-links li {
+                margin: 20px 0;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-img {
+                width: 200px;
+                height: 200px;
+            }
+
+            .sidebar {
+                left: 10px;
+                flex-direction: row;
+                top: auto;
+                bottom: 20px;
+                transform: none;
+                gap: 15px;
+            }
+
+            .sidebar a {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .scroll-top {
+                bottom: 80px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+        }
+    </style>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div class="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Video Background -->
+    <video autoplay muted loop id="video-bg">
+        <source src="https://videos.pexels.com/video-files/3141208/3141208-sd_640_360_25fps.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
+    <!-- Sidebar for Social Links -->
+    <div class="sidebar">
+        <a href="https://www.linkedin.com/in/akshitha-reddy-6217452b0/" title="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
+        <a href="https://github.com/AkshithaReddy005" target="_blank" title="GitHub Profile"><i class="fab fa-github"></i></a>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">Akshitha Reddy</a>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <div class="menu-btn">☰</div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-img">
+                    <img src="akshitha_reddy_profile.jpg" alt="Profile Image">
+                </div>
+                <div class="hero-text">
+                    <h1>Akshitha <span>Reddy</span></h1>
+                    <p>Second-year IT student utilizing expertise in C++, Python, Java, and full-stack web development to contribute to the creation of innovative and scalable software solutions. I aim to work in a collaborative, growth-oriented environment to enhance my technical skills and deliver impactful, user-centric applications.</p>
+                    <a href="https://drive.google.com/file/d/1Yv-XKNNbVQ_O3h74CU5XXGDoHkWQteAT/view?usp=sharing" target="_blank" class="btn">View My Resume</a>
+                    <a href="https://drive.google.com/uc?export=download&id=1Yv-XKNNbVQ_O3h74CU5XXGDoHkWQteAT" class="btn" download>Download Resume</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section" id="about">
+        <div class="container">
+            <h2 class="section-title">About</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Skills</h3>
+                    <div class="skills-grid">
+                        <div class="skill-item">Java</div>
+                        <div class="skill-item">C++</div>
+                        <div class="skill-item">C</div>
+                        <div class="skill-item">HTML</div>
+                        <div class="skill-item">CSS</div>
+                        <div class="skill-item">JavaScript</div>
+                        <div class="skill-item">Node.js</div>
+                        <div class="skill-item">React</div>
+                        <div class="skill-item">Bootstrap</div>
+                        <div class="skill-item">Data Structures</div>
+                        <div class="skill-item">DBMS</div>
+                        <div class="skill-item">Leadership</div>
+                        <div class="skill-item">Communication</div>
+                        <div class="skill-item">Time Management</div>
+                        <div class="skill-item">Teamwork</div>
+                    </div>
+                    <h3>Achievements</h3>
+                    <ul class="achievements-list">
+                        <li>Pre-Finalist in Smart India Hackathon (SIH) 2024 - Team Lead</li>
+                        <li>Winner of WEBATHON 2025 – Conducted by ACUMEN IT-VCE</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="section" id="projects">
+        <div class="container">
+            <h2 class="section-title">Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-img">
+                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="WanderHub Project">
+                    </div>
+                    <div class="project-info">
+                        <h3>WanderHub</h3>
+                        <p>Developed a responsive web application for exploring travel destinations, offering curated travel ideas, tips, and a user-friendly interface for trip planning.</p>
+                        <p class="tech-stack">Tech Stack: HTML, CSS, JavaScript</p>
+                        <div class="project-links">
+                            <a href="https://akshithareddy005.github.io/WANDERHUB/" target="_blank">Demo</a>
+                            <a href="https://github.com/AkshithaReddy005/WANDERHUB" target="_blank">View Project</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-img">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1zIwjCjspxCjyVDG6GfWg1p1n-HtVQLbtUA&s" alt="Voice-Activated Emergency System Project">
+                    </div>
+                    <div class="project-info">
+                        <h3>Voice-Activated Emergency System</h3>
+                        <p>A system that detects distress signals via voice/sound triggers and sends automatic location-based alerts to responders and trusted contacts.</p>
+                        <p class="tech-stack">Tech Stack: Python, HTML, CSS, JavaScript</p>
+                        <div class="project-links">
+                            <a href="https://github.com/AkshithaReddy005/VOICE-ACTIVATED-EMERGENCY-SYSTEM" target="_blank">View Project</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-img">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Fitness Tracker Project">
+                    </div>
+                    <div class="project-info">
+                        <h3>Fitness Tracker</h3>
+                        <p>Built a system that detects distress signals through voice triggers and sends location-based alerts to responders. Designed a qualitative interface with robust backend logic for real-time emergency tracking.</p>
+                        <p class="tech-stack">Tech Stack: Java</p>
+                        <div class="project-links">
+                            <a href="https://github.com/AkshithaReddy005/FITNESS-TRACKER" target="_blank">View Project</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-img">
+                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Learn-UPSC Project">
+                    </div>
+                    <div class="project-info">
+                        <h3>Learn-UPSC</h3>
+                        <p>Designed a responsive interface for UPSC aspirants, focusing on user-friendly navigation and layout.</p>
+                        <p class="tech-stack">Tech Stack: HTML, CSS, JavaScript</p>
+                        <div class="project-links">
+                            <a href="https://akshithareddy005.github.io/LEARN-UPSC/" target="_blank">Demo</a>
+                            <a href="https://github.com/AkshithaReddy005/LEARN-UPSC" target="_blank">View Project</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-img">
+                        <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="City Route Planner Project">
+                    </div>
+                    <div class="project-info">
+                        <h3>City Route Planner</h3>
+                        <p>Developed a Java-based project to model city road networks, leveraging Dijkstra’s algorithm for quantitative optimization of routes and cycle detection for network stability.</p>
+                        <p class="tech-stack">Tech Stack: Java</p>
+                        <div class="project-links">
+                            <a href="https://github.com/AkshithaReddy005/CITY-ROUTE-PLANNER" target="_blank">View Project</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section" id="contact">
+        <div class="container">
+            <h2 class="section-title">Contact Me</h2>
+            <div class="contact-content">
+                <p>For any inquiries or opportunities, please feel free to contact me via email.</p>
+                <a href="mailto:akshithareddy2405@gmail.com?subject=Recruitment Opportunity for Akshitha Reddy" class="email-btn">Email Me</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Akshitha Reddy. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scroll-to-Top Button -->
+    <div class="scroll-top" title="Back to Top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Hide loader after page load
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 500);
+        });
+
+        // Mobile Menu Toggle
+        const menuBtn = document.querySelector('.menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            header.classList.toggle('scrolled', window.scrollY > 50);
+
+            // Scroll-to-top button visibility
+            const scrollTop = document.querySelector('.scroll-top');
+            scrollTop.classList.toggle('visible', window.scrollY > 300);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Scroll-to-top functionality
+        document.querySelector('.scroll-top').addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+    <!-- Font Awesome for icons -->
+   <script src="https://kit.fontawesome.com/your-new-kit-code.js" crossorigin="anonymous"></script>
+</body>
+</html>
